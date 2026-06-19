@@ -52,7 +52,6 @@ namespace WebApplication8.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Employee>> GetById(int id)
         {
-
             var employee = await _db.Employees.FindAsync(id);
             return employee is null ? NotFound() : employee;
         }
