@@ -1,0 +1,45 @@
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment Env
+@inject Microsoft.Extensions.Configuration.IConfiguration Config
+
+@inject Microsoft.Extensions.Configuration.IConfiguration config123
+@{
+
+
+
+    ViewData["Title"] = "React Demo";
+    var useViteDevServer = Env.IsDevelopment() && Config.GetValue<bool>("Vite:UseDevServer");
+
+    var user = Env.IsDevelopment() && Config.GetValue<bool>("Vite:UseDevServer");
+    const string viteDevServer = "http://localhost:5173";
+
+
+
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="text-muted">A React app (Vite-bundled) mounted inside this MVC view, fetching tasks from <code>/api/tasks</code>.</p>
+
+<!-- React mounts here -->
+<div id="react-root"></div>
+
+@section Scripts {
+    @if (useViteDevServer)
+    {
+        <!-- Vite dev server: Hot Module Replacement + React Fast Refresh.
+             Requires `npm run dev` running in ClientApp. -->
+        <script type="module">
+            import RefreshRuntime from "@(viteDevServer)/@@react-refresh";
+            RefreshRuntime.injectIntoGlobalHook(window);
+            window.$RefreshReg$ = () => { };
+            window.$RefreshSig$ = () => (type) => type;
+            window.__vite_plugin_react_preamble_installed__ = true;
+        </script>
+        <script type="module" src="@(viteDevServer)/@@vite/client"></script>
+        <script type="module" src="@(viteDevServer)/src/main.jsx"></script>
+    }
+    else
+    {
+        <!-- Pre-built ES module produced by the Vite build (ClientApp -> wwwroot/dist) -->
+        <script type="module" src="~/dist/react-demo.js" asp-append-version="true"></script>
+    }
+}

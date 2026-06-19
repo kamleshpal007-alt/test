@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SpaRoot>ClientApp\</SpaRoot>
+  </PropertyGroup>
+
+  <!-- Keep the React client app out of the .NET compile/watch -->
+  <ItemGroup>
+    <Content Remove="$(SpaRoot)**" />
+    <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**;$(SpaRoot)dist\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.10">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.10" />
+    <PackageReference Include="RabbitMQ.Client" Version="7.2.1" />
+  </ItemGroup>
+
+  <!-- Run `npm install` only when package.json changes (stamp-file gated) -->
+  <Target Name="NpmInstall" BeforeTargets="NpmBuild" Inputs="$(SpaRoot)package.json" Outputs="$(SpaRoot)node_modules\.install-stamp">
+    <Message Importance="high" Text="Restoring npm packages for the React client..." />
+    <Exec Command="npm install" WorkingDirectory="$(SpaRoot)" />
+    <Touch Files="$(SpaRoot)node_modules\.install-stamp" AlwaysCreate="true" />
+  </Target>
+
+  <!-- Build the React bundle into wwwroot/dist on every .NET build -->
+  <Target Name="NpmBuild" BeforeTargets="BeforeBuild">
+    <Message Importance="high" Text="Building React client (Vite)..." />
+    <Exec Command="npm run build" WorkingDirectory="$(SpaRoot)" />
+  </Target>
+
+</Project>

@@ -1,0 +1,11 @@
+# .NET build output
+[Bb]in/
+[Oo]bj/
+.vs/
+
+# React client (Vite)
+**/ClientApp/node_modules/
+**/ClientApp/.install-stamp
+
+# Vite build artifact (regenerated on build)
+**/wwwroot/dist/

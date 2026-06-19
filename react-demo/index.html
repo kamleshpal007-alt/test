@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React.js Basic Demo</title>
+
+  <!-- React + ReactDOM (development builds, via CDN) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <!-- Babel lets us write JSX directly in the browser (demo only) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root { --accent: #2563eb; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: #f1f5f9;
+      color: #0f172a;
+      margin: 0;
+      padding: 40px 16px;
+    }
+    .card {
+      max-width: 480px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      padding: 28px;
+    }
+    h1 { margin: 0 0 4px; font-size: 22px; }
+    .sub { color: #64748b; margin: 0 0 24px; font-size: 14px; }
+    .counter { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+    .count { font-size: 32px; font-weight: 700; min-width: 48px; text-align: center; }
+    button {
+      border: none; border-radius: 8px; padding: 10px 16px;
+      font-size: 15px; cursor: pointer; background: var(--accent); color: #fff;
+    }
+    button.ghost { background: #e2e8f0; color: #0f172a; }
+    button:hover { opacity: .9; }
+    .row { display: flex; gap: 8px; margin-bottom: 16px; }
+    input {
+      flex: 1; padding: 10px 12px; border: 1px solid #cbd5e1;
+      border-radius: 8px; font-size: 15px;
+    }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+    }
+    li span { flex: 1; }
+    li.done span { text-decoration: line-through; color: #94a3b8; }
+    .del { background: transparent; color: #ef4444; padding: 4px 8px; }
+    .empty { color: #94a3b8; font-size: 14px; padding: 8px 0; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- type="text/babel" tells Babel to compile this JSX before running -->
+  <script type="text/babel">
+    const { useState } = React;
+
+    function Counter() {
+      const [count, setCount] = useState(0);
+      return (
+        <div className="counter">
+          <button className="ghost" onClick={() => setCount(c => c - 1)}>−</button>
+          <div className="count">{count}</div>
+          <button onClick={() => setCount(c => c + 1)}>+</button>
+        </div>
+      );
+    }
+
+    function TodoList() {
+      const [text, setText] = useState("");
+      const [todos, setTodos] = useState([
+        { id: 1, label: "Learn React state", done: true },
+        { id: 2, label: "Build a component", done: false },
+      ]);
+
+      const add = () => {
+        const label = text.trim();
+        if (!label) return;
+        setTodos(t => [...t, { id: Date.now(), label, done: false }]);
+        setText("");
+      };
+
+      const toggle = (id) =>
+        setTodos(t => t.map(todo =>
+          todo.id === id ? { ...todo, done: !todo.done } : todo
+        ));
+
+      const remove = (id) =>
+        setTodos(t => t.filter(todo => todo.id !== id));
+
+      return (
+        <div>
+          <div className="row">
+            <input
+              value={text}
+              placeholder="Add a task…"
+              onChange={e => setText(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && add()}
+            />
+            <button onClick={add}>Add</button>
+          </div>
+          <ul>
+            {todos.length === 0 && <p className="empty">No tasks yet.</p>}
+            {todos.map(todo => (
+              <li key={todo.id} className={todo.done ? "done" : ""}>
+                <input
+                  type="checkbox"
+                  checked={todo.done}
+                  onChange={() => toggle(todo.id)}
+                />
+                <span>{todo.label}</span>
+                <button className="del" onClick={() => remove(todo.id)}>✕</button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+
+    function App() {
+      return (
+        <div className="card">
+          <h1>React.js Basic Demo</h1>
+          <p className="sub">A counter and a todo list — state, props & events.</p>
+          <Counter />
+          <TodoList />
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</body>
+</html>
