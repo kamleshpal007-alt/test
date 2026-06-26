@@ -16,6 +16,9 @@ builder.Services.AddSingleton<RabbitMqConnection>();
 builder.Services.AddSingleton<RabbitMqPublisher>();
 builder.Services.AddSingleton<EventStore>();
 builder.Services.AddHostedService<EmployeeEventConsumer>();
+builder.Services.AddHostedService<DepartmentEventConsumer>();
+builder.Services.AddHostedService<CategoryEventConsumer>();
+builder.Services.AddHostedService<SalaryEventConsumer>();
 
 
 var app = builder.Build();

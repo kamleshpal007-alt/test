@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Salaries (Database CRUD)";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="text-muted">
+    Full CRUD against <code>/api/salaries</code>, backed by a real
+    <strong>SQL Server LocalDB</strong> database via Entity Framework Core.
+    Salaries are linked to employees and data persists across restarts.
+</p>
+
+<!-- React mounts here -->
+<div id="salaries-root"></div>
+
+@section Scripts {
+    <script type="module" src="~/dist/salaries-demo.js" asp-append-version="true"></script>
+}

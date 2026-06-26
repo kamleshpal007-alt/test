@@ -14,8 +14,8 @@ namespace WebApplication8.Controllers
 
         public EventsController(EventStore store) => _store = store;
 
-        // GET /api/events
+        // GET /api/events?topic=employee   (defaults to employee for back-compat)
         [HttpGet]
-        public IEnumerable<EventEntry> Get() => _store.GetRecent();
+        public IEnumerable<EventEntry> Get(string topic = "employee") => _store.GetRecent(topic);
     }
 }

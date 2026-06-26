@@ -41,6 +41,22 @@ namespace WebApplication8.Controllers
             return View();
         }
 
+        // Renders the Razor page that hosts the database-backed Departments module.
+        public IActionResult Departments()
+        {
+            return View();
+        }
+
+        public IActionResult Categories()
+        {
+            return View();
+        }
+
+        public IActionResult Salaries()
+        {
+            return View();
+        }
+
         // JSON API the React component fetches on load.
         [HttpGet("api/tasks")]
         public IActionResult GetTasks()

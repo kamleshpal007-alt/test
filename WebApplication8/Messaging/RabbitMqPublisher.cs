@@ -17,20 +17,20 @@ namespace WebApplication8.Messaging
             _logger = logger;
         }
 
-        public async Task PublishAsync(object message, CancellationToken ct = default)
+        public async Task PublishAsync(string queueName, object message, CancellationToken ct = default)
         {
             try
             {
                 // A channel is cheap; open one per publish so we never share it
                 // across concurrent requests (channels are not thread-safe).
-                await using var channel = await _connection.CreateChannelAsync(ct);
+                await using var channel = await _connection.CreateChannelAsync(queueName, ct);
 
                 var json = JsonSerializer.Serialize(message);
                 var body = Encoding.UTF8.GetBytes(json);
 
                 await channel.BasicPublishAsync(
-                    exchange: "",                              // default exchange
-                    routingKey: RabbitMqConnection.QueueName,  // -> goes straight to our queue
+                    exchange: "",            // default exchange
+                    routingKey: queueName,   // -> goes straight to the given queue
                     body: body,
                     cancellationToken: ct);
 

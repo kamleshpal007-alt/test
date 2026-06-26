@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Departments (Database CRUD)";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="text-muted">
+    Full CRUD against <code>/api/departments</code>, backed by a real
+    <strong>SQL Server LocalDB</strong> database via Entity Framework Core.
+    Department codes are unique and data persists across restarts.
+</p>
+
+<!-- React mounts here -->
+<div id="departments-root"></div>
+
+@section Scripts {
+    <script type="module" src="~/dist/departments-demo.js" asp-append-version="true"></script>
+}

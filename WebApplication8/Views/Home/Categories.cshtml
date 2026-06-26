@@ -1,0 +1,17 @@
+@{
+    ViewData["Title"] = "Categories (Database CRUD)";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p class="text-muted">
+    Full CRUD against <code>/api/categories</code>, backed by a real
+    <strong>SQL Server LocalDB</strong> database via Entity Framework Core.
+    Category codes are unique and data persists across restarts.
+</p>
+
+<!-- React mounts here -->
+<div id="categories-root"></div>
+
+@section Scripts {
+    <script type="module" src="~/dist/categories-demo.js" asp-append-version="true"></script>
+}

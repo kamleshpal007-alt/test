@@ -1,0 +1,38 @@
+@model IEnumerable<WebApplication8.Models.Salary>
+
+@{
+    ViewData["Title"] = "Salaries";
+}
+
+<h1>Salaries</h1>
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Employee</th>
+            <th>Amount</th>
+            <th>Currency</th>
+            <th>Effective Date</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var s in Model) {
+    <tr>
+        <td>@s.Id</td>
+        <td>@s.Employee?.Name</td>
+        <td>@s.Amount</td>
+        <td>@s.Currency</td>
+        <td>@s.EffectiveDate.ToShortDateString()</td>
+        <td>
+            <a class="btn btn-sm btn-secondary" asp-action="Edit" asp-route-id="@s.Id">Edit</a>
+            <a class="btn btn-sm btn-info" asp-action="Details" asp-route-id="@s.Id">Details</a>
+            <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@s.Id">Delete</a>
+        </td>
+    </tr>
+}
+    </tbody>
+</table>

@@ -7,8 +7,11 @@ namespace WebApplication8.Messaging
     // Registered as a singleton so the whole app reuses the same connection.
     public sealed class RabbitMqConnection : IAsyncDisposable
     {
-        // The queue both the publisher and consumer use.
-        public const string QueueName = "employee-events";
+        // Each module has its own queue so its events are kept separate.
+        public const string EmployeeQueue = "employee-events";
+        public const string DepartmentQueue = "department-events";
+        public const string CategoryQueue = "category-events";
+        public const string SalaryQueue = "salary-events";
 
         private readonly ConnectionFactory _factory;
         private readonly ILogger<RabbitMqConnection> _logger;
@@ -26,15 +29,15 @@ namespace WebApplication8.Messaging
             };
         }
 
-        // Opens a channel on the shared connection and makes sure the queue exists.
-        // QueueDeclare is idempotent — safe to call every time.
-        public async Task<IChannel> CreateChannelAsync(CancellationToken ct = default)
+        // Opens a channel on the shared connection and makes sure the given queue
+        // exists. QueueDeclare is idempotent — safe to call every time.
+        public async Task<IChannel> CreateChannelAsync(string queueName, CancellationToken ct = default)
         {
             await EnsureConnectionAsync(ct);
 
             var channel = await _connection!.CreateChannelAsync(cancellationToken: ct);
             await channel.QueueDeclareAsync(
-                queue: QueueName,
+                queue: queueName,
                 durable: true,      // queue survives a broker restart
                 exclusive: false,
                 autoDelete: false,

@@ -13,6 +13,9 @@ export default defineConfig({
         cors: true,
         origin: "http://localhost:5173",
     },
+
+
+
     build: {
         outDir: "../wwwroot/dist",
         emptyOutDir: true,
@@ -22,6 +25,9 @@ export default defineConfig({
                 "react-demo": "src/main.jsx",
                 "crud-demo": "src/crud.jsx",
                 "employees-demo": "src/employees.jsx",
+                "departments-demo": "src/departments.jsx",
+                "categories-demo": "src/categories.jsx",
+                "salaries-demo": "src/salaries.jsx"
             },
             output: {
                 entryFileNames: "[name].js",       // -> react-demo.js, crud-demo.js

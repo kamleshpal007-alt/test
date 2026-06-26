@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 using WebApplication8.Data;
 using WebApplication8.Messaging;
 using WebApplication8.Models;
@@ -13,12 +14,14 @@ namespace WebApplication8.Controllers
     {
         private readonly AppDbContext _db;
         private readonly RabbitMqPublisher _publisher;
+        private readonly RabbitMQTracingOptions _rabbitMqPublisher;
 
         // The DbContext and the RabbitMQ publisher are injected by DI.
-        public EmployeesController(AppDbContext db, RabbitMqPublisher publisher)
+        public EmployeesController(AppDbContext db, RabbitMqPublisher publisher,RabbitMQTracingOptions objrabbitmqtracingOption)
         {
             _db = db;
             _publisher = publisher;
+            _rabbitMqPublisher = objrabbitmqtracingOption;
         }
 
         // READ a PAGE  ->  GET /api/employees?page=1&pageSize=5
@@ -38,6 +41,9 @@ namespace WebApplication8.Controllers
                 .Take(pageSize)                                   // take just this page
                 .ToListAsync();
 
+            var totala = await query.CountAsync();
+                
+
             return new
             {
                 items,
@@ -46,6 +52,8 @@ namespace WebApplication8.Controllers
                 pageSize,
                 totalPages = (int)Math.Ceiling(total / (double)pageSize)
             };
+
+         
         }
 
         // READ one  ->  GET /api/employees/5
@@ -68,7 +76,7 @@ namespace WebApplication8.Controllers
             await _db.SaveChangesAsync();
 
             // Announce the event to RabbitMQ (the consumer will pick it up).
-            await _publisher.PublishAsync(new { Event = "EmployeeCreated", input.Id, input.Name });
+            await _publisher.PublishAsync(RabbitMqConnection.EmployeeQueue, new { Event = "EmployeeCreated", input.Id, input.Name });
 
             return CreatedAtAction(nameof(GetById), new { id = input.Id }, input);
         }
@@ -79,14 +87,14 @@ namespace WebApplication8.Controllers
         {
             var employee = await _db.Employees.FindAsync(id);
             if (employee is null) return NotFound();
-
+                
             employee.Name = input.Name;
             employee.Email = input.Email;
             employee.Department = input.Department;
             employee.Salary = input.Salary;
 
             await _db.SaveChangesAsync();
-            await _publisher.PublishAsync(new { Event = "EmployeeUpdated", employee.Id, employee.Name });
+            await _publisher.PublishAsync(RabbitMqConnection.EmployeeQueue, new { Event = "EmployeeUpdated", employee.Id, employee.Name });
             return employee;
         }
 
@@ -99,7 +107,7 @@ namespace WebApplication8.Controllers
 
             _db.Employees.Remove(employee);
             await _db.SaveChangesAsync();
-            await _publisher.PublishAsync(new { Event = "EmployeeDeleted", id });
+            await _publisher.PublishAsync(RabbitMqConnection.EmployeeQueue, new { Event = "EmployeeDeleted", id });
             return NoContent();
         }
     }
