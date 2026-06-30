@@ -41,9 +41,6 @@ namespace WebApplication8.Controllers
                 .Take(pageSize)                                   // take just this page
                 .ToListAsync();
 
-            var totala = await query.CountAsync();
-                
-
             return new
             {
                 items,
@@ -53,7 +50,6 @@ namespace WebApplication8.Controllers
                 totalPages = (int)Math.Ceiling(total / (double)pageSize)
             };
 
-         
         }
 
         // READ one  ->  GET /api/employees/5
