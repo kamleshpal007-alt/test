@@ -85,6 +85,7 @@ function SalaryCrud() {
             method: editingId ? "PUT" : "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
+            
         };
 
         const url = editingId ? `${API}/${editingId}` : API;
@@ -135,6 +136,7 @@ function SalaryCrud() {
                     📡 Live RabbitMQ Events (consumed)
                 </div>
                 <div className="card-body p-2" style={{ maxHeight: 180, overflowY: "auto" }}>
+                 
                     {events.length === 0 ? (
                         <p className="text-muted m-2 mb-0">
                             No events yet — add/edit/delete a salary record below and watch them appear here.
